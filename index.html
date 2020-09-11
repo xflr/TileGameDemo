@@ -1,0 +1,536 @@
+<html>
+<head>
+<title>Tile Game - Demo - Humber College</title>
+<canvas id="workspace" width="732" height="732"></canvas>
+<canvas id="bars" width="244" height="732"></canvas>
+<meta charset="utf-8">
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	
+</head>
+
+<body>
+<script type="text/javascript">
+	var animationState = 0;
+	var x = 0;
+	var y = 610;
+
+	var posX = 0;
+	var posY = 0;
+	var whiteboxX = 0;
+	var whiteboxY = 0;
+	var houseX = 0;
+	var houseY = 0;
+	var enemyX = 0;
+	var enemyY = 0;
+	var bossX = 0;
+	var bossY = 0;
+	var food = 5;
+	
+	var TheWorld = [ ];
+	for(var arrayX = 0; arrayX < 6; ++arrayX){
+		TheWorld[arrayX] = [ ];
+		for(var arrayY = 0; arrayY < 6; ++arrayY){
+			TheWorld[arrayX][arrayY] = null;
+		}
+	}
+		
+	var FrodoSeen = [ ];
+		for(var arrayX = 0; arrayX < 6; ++arrayX){
+			FrodoSeen[arrayX] = [ ];
+			for(var arrayY = 0; arrayY < 6; ++arrayY){
+				FrodoSeen[arrayX][arrayY] = 0;
+			}
+		}
+		
+	Map();
+	function Map(){
+		var i = 0;
+		
+		FrodoSeen[0][5] = 1;
+		FrodoSeen[0][4] = 1;
+		FrodoSeen[1][4] =1;
+		FrodoSeen[1][5] =1;
+		
+		TheWorld[0][5] = 1;
+		TheWorld[5][0] = 3;
+		
+		var n = 0;
+		while(n < 3){//Houses
+			
+			var RandomX = Math.floor((Math.random()*6));
+			var RandomY = Math.floor((Math.random()*6));
+			//alert(RandomX + "x," + RandomY + "y");
+
+			if(TheWorld[RandomX][RandomY] == null){
+				TheWorld[RandomX][RandomY] = 4;
+
+				n++;
+			}
+			else {
+				continue;
+			}
+			
+		}
+		var c = 0;
+		while(c < 4){//Enemies
+			var RandomXe = Math.floor((Math.random()*6));
+			var RandomYe = Math.floor((Math.random()*6));
+			
+			if(TheWorld[RandomXe][RandomYe] == null){
+				TheWorld[RandomXe][RandomYe] = 5;
+				c++;
+			}
+			else{
+				continue;
+			}
+		}
+		var j = 0;
+		while(j < 1){//Boss
+			var RandomXb = Math.floor((Math.random()*6));
+			var RandomYb = Math.floor((Math.random()*6));
+			
+			if(TheWorld[RandomXb][RandomYb] == null){
+				TheWorld[RandomXb][RandomYb] = 6;
+				j++;
+			}
+			else{
+				continue;
+			}
+		}
+	}
+	
+	
+	var canvas = document.getElementById("workspace");
+	var drawingSurface = canvas.getContext("2d");
+	
+	var canvasBar = document.getElementById("bars");
+    var healthBar = canvasBar.getContext("2d");
+	
+	var barBackground = new Image();
+	barBackground.onload = function()
+	{
+		healthBar.drawImage(barBackground, 0, 0);
+	}
+	barBackground.src = "sprites/barBackground.png";
+
+	var background = new Image();
+
+	background.src = "bg.png"; 
+
+	var Opening = new Image();
+	Opening.onload = function()
+	{
+		drawingSurface.drawImage(Opening, 0, 0);
+	}
+	Opening.src = "Opening.png";
+
+	var whitebox = {
+		IMAGE: "sprites/whitebox.png",
+		Width: 122,
+		Height: 122,
+		//The numbers of the animation frames and the starting frame
+		numberOfFrames: 1,
+		currentFrame: 0,
+		//Properties of the animation cell's X and Y positions on the tile sheet. //They're 0 when this object first loads
+		sourceX: 0,
+		sourceY: 0,
+	};
+
+	var house = {
+		IMAGE: "sprites/house.png",
+		Width: 122,
+		Height: 122,
+		//The numbers of the animation frames and the starting frame
+		numberOfFrames: 6,
+		currentFrame: 0,
+		//Properties of the animation cell's X and Y positions on the tile sheet. //They're 0 when this object first loads
+		sourceX: 0,
+		sourceY: 0,
+	};
+
+	var frodoIdle = {
+		IMAGE: "sprites/frodo.png",
+		Width: 122,
+		Height: 122,
+		currentX: 0,
+		currentY: 610,
+		//The numbers of the animation frames and the starting frame
+		numberOfFrames: 6,
+		currentFrame: 0,
+		//Properties of the animation cell's X and Y positions on the tile sheet. //They're 0 when this object first loads
+		sourceX: 0,
+		sourceY: 0,
+		//UpdateAnimation 	method
+		updateAnimation: function()
+		{
+			this.sourceX = this.currentFrame * this.Width;
+			this.sourceY = 0;         
+		}
+	};
+
+	var enemy = {
+		IMAGE: "sprites/exterminatorc.png",
+		Width: 122,
+		Height: 122,
+		//The numbers of the animation frames and the starting frame
+		numberOfFrames: 6,
+		currentFrame: 0,
+		//Properties of the animation cell's X and Y positions on the tile sheet. //They're 0 when this object first loads
+		sourceX: 0,
+		sourceY: 0,
+	}
+	var boss = {
+		IMAGE: "sprites/wraith.png",
+		Width: 122,
+		Height: 122,
+		//The numbers of the animation frames and the starting frame
+		numberOfFrames: 6,
+		currentFrame: 0,
+		//Properties of the animation cell's X and Y positions on the tile sheet. //They're 0 when this object first loads
+		sourceX: 0,
+		sourceY: 0,
+	}
+	var imageFrodoIdle = new Image();
+	imageFrodoIdle.src = frodoIdle.IMAGE;
+
+	var imageHouse = new Image();
+	imageHouse.src = house.IMAGE;
+
+	var imageEnemy = new Image();
+	imageEnemy.src = enemy.IMAGE;
+
+	var imageBoss = new Image();
+	imageBoss.src = boss.IMAGE;
+
+	var imageWhitebox = new Image ();
+	imageWhitebox.src = whitebox.IMAGE;
+
+	function renderWhitebox(){
+		var m,q;
+		m =0;
+		q =0;	
+		while(m < 6){
+			
+			while(q < 6){	
+					//alert(FrodoSeen[m][q]);				
+				if(FrodoSeen[m][q] == 0){
+					whiteboxX = m * 122;
+					whiteboxY = q * 122;
+					drawingSurface.drawImage(imageWhitebox,whitebox.sourceX, whitebox.sourceY, whitebox.Width, whitebox.Height,whiteboxX, whiteboxY, whitebox.Width, whitebox.Height);	
+					q++;
+				}
+				else
+				{
+					q++;
+				}
+			}
+			q = 0;
+			m++;
+		}	
+	}
+
+	function renderHouse(){
+		drawingSurface.drawImage(imageHouse,house.sourceX, house.sourceY, house.Width, house.Height,houseX, houseY, house.Width, house.Height);	
+	}
+
+	function renderFrodoIdle()
+	{		
+		drawingSurface.drawImage(imageFrodoIdle,frodoIdle.sourceX, frodoIdle.sourceY, frodoIdle.Width, frodoIdle.Height,x, y, frodoIdle.Width, frodoIdle.Height);	
+		
+	}
+	function renderEnemy()
+	{
+		drawingSurface.drawImage(imageEnemy,enemy.sourceX, enemy.sourceY, enemy.Width, enemy.Height,enemyX, enemyY, enemy.Width, enemy.Height);	
+	}
+
+	function renderBoss()
+	{
+		drawingSurface.drawImage(imageBoss, boss.sourceX, boss.sourceY, boss.Width, boss.Height, bossX, bossY, boss.Width, boss.Height);
+	}
+	function doFrodoIdle()
+		{
+			frodoIdle.updateAnimation();
+			renderFrodoIdle();
+		}
+		
+	function updateSeen()
+	{
+
+		var xPosi = (x / 122);
+		var yPosi = (y / 122);
+		var seen_north = yPosi + 1;
+		var seen_south = yPosi - 1;
+		var seen_west = xPosi - 1;
+		var seen_east = xPosi + 1;
+
+		if (TheWorld[xPosi][yPosi] == 4)
+		{
+			food = food + 5;
+		}
+		food--;
+			
+		if (TheWorld[xPosi][yPosi] == 3)
+		{
+				if (confirm('You have reached to the Rivendale!\n You Won!\n Play again?')) {
+				location.reload();
+				} 
+				else {
+					self.close();
+				}
+		}
+		if(food == 0)
+		{
+		
+			if (confirm('Game Over, You run out of Lembas try again?')) {
+				location.reload();
+				} 
+				else {
+					self.close();
+				}
+		
+		}
+		
+		if (seen_north < 0)
+		{
+			seen_north = 0;
+		}
+		if (seen_south < 0)
+		{
+			seen_south = 0;
+		}
+		if (seen_west < 0)
+		{
+			seen_west = 0;
+		}
+		if (seen_east < 0)
+		{
+			seen_east = 0;
+		}
+		if (seen_north > 5)
+		{
+			seen_north = 5;
+		}
+		if (seen_south > 5)
+		{
+			seen_south = 5;
+		}
+		if (seen_west > 5)
+		{
+			seen_west = 5;
+		}
+		if (seen_east > 5)
+		{
+			seen_east = 5;
+		}
+
+		FrodoSeen[xPosi][seen_north] = 1;
+		FrodoSeen[xPosi][seen_south] = 1;
+		FrodoSeen[seen_west][yPosi] = 1;
+		FrodoSeen[seen_east][yPosi] = 1;
+		
+		frodoIdle.currentX = xPosi;
+		frodoIdle.currentY = yPosi;
+	}
+
+	function moveBoss()
+	{
+		for(var m = 0; m < 6; ++m){
+				for(var q = 0; q < 6; ++q){
+					if(TheWorld[m][q] == 6){
+					TheWorld[m][q] = null;
+					}
+				}
+		}
+		
+		var j = 0;
+		while(j < 1){//Boss
+			var RandomXb = Math.floor((Math.random()*6));
+			var RandomYb = Math.floor((Math.random()*6));
+	
+			if(TheWorld[RandomXb][RandomYb] == null || TheWorld[RandomXb][RandomYb] == 1){
+				TheWorld[RandomXb][RandomYb] = 6;
+				j++;
+			}
+			else{
+				continue;
+			}
+		}
+	}
+
+	window.addEventListener("keydown", keydownHandler, false);
+	function keydownHandler(event){
+		switch(event.keyCode) 
+		{
+			case 39:
+			if (frodoIdle.currentX + 1 > 5){
+			break;}
+			else{
+				x += 122;
+				animationState = 0;
+				updateSeen();
+				moveBoss();
+				Render();
+				bossCheck()
+				}
+				break;   
+				
+		}
+			
+		switch(event.keyCode) 
+		{
+			case 37:
+				if (frodoIdle.currentX - 1 < 0){
+					break;}
+				else{
+					x -= 122;
+					animationState = 0;
+					updateSeen();
+					moveBoss();						
+					Render();
+					bossCheck()
+				}
+				break;                        
+		}
+			
+		switch(event.keyCode) 
+		{
+			case 38:
+				if (frodoIdle.currentY - 1 < 0){
+					break;}
+				else{
+					y -= 122;
+					animationState = 0;
+					updateSeen();
+					moveBoss();
+					Render();
+					bossCheck()
+				}
+				break;                        
+		}
+			
+		switch(event.keyCode) 
+		{
+			case 40:
+				if (frodoIdle.currentY + 1 > 5){
+					break;}
+				else{
+					y += 122;
+					animationState = 0;
+					updateSeen();
+					moveBoss();
+					Render();
+					bossCheck()
+				}
+				break;                        
+		}
+		
+		switch(event.keyCode) 
+		{
+			//press "s" to start.
+			case 83:
+				Render();
+				break;                        
+		}
+	}
+			
+
+	function bossCheck(){
+		if(bossX == x){
+			if(bossY == y){
+				alert("x:" + bossX + "y:" + bossY);
+				if (confirm('Nazgul has found you Frodo, try again?')) {
+					location.reload();
+				} 
+				else {
+					self.close();
+				}
+			}
+		}
+	}
+	function Render(){
+		drawingSurface.clearRect(0,0,canvas.width, canvas.height);
+
+		drawingSurface.drawImage(background, 0, 0);
+		
+		healthBar.clearRect(0,0,healthBar.width, healthBar.height);
+		healthBar.drawImage(barBackground, 0, 0);
+		
+		healthBar.fillStyle="#FF0000";
+		healthBar.fillRect(8,38,50,(food*43));
+		healthBar.fillStyle="#020ef9";
+		healthBar.fillRect(8,8,50,30);
+		
+		healthBar.font = "30px Arial";
+		healthBar.strokeText(food,25, 70);
+		healthBar.font = "20px Arial";
+		healthBar.strokeText("food",13,30);
+		
+		var m,q;
+		m =0;
+		q =0;				
+		
+		while(m < 6){
+			
+			while(q < 6){				
+				if(TheWorld[m][q] == 4){
+					houseX = m * 122;
+					houseY = q * 122;
+					//alert(m);	
+					renderHouse();
+					q++;
+				}
+				else{
+					q++;
+				}
+			}
+			q = 0;
+			m++;
+		}
+		var z = 0;
+		var v = 0;
+		while(z < 6){
+			while(v < 6){
+				if(TheWorld[z][v] == 5){
+					enemyX = z*122;
+					enemyY = v*122;
+					renderEnemy();
+					v++;
+				}
+				else{
+					v++;
+				}
+			}
+			v = 0;
+			z++;
+		}
+		var f = 0;
+		var l = 0;
+		while (f<6){
+			while (l < 6){
+				if(TheWorld[f][l] == 6){
+					bossX = f*122;
+					bossY = l*122;
+					renderBoss();
+					l++;
+				}
+				else{
+					l++;
+				}
+			}
+			l = 0;
+			f++;
+		}
+			switch(animationState)
+		{
+			case 0:
+				doFrodoIdle();
+				break;               
+		}
+		renderWhitebox();
+		
+	}//,60 //each frame (frame speed)
+		
+</script>
+</body>
+
+</html>

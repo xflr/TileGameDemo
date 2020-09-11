@@ -1,0 +1,224 @@
+<html>
+<head>
+<canvas id="workspace" width="732" height="732"></canvas>
+<meta charset="utf-8">
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	
+</head>
+
+<body>
+<script type="text/javascript">
+	var animationState = 0;
+	var x = 0;
+	var y = 610;
+	var posX = 0;
+	var posY = 0;
+	var houseX = 0;
+	var houseY = 0;
+	
+	
+	var TheWorld = [[]];
+	Map();
+	function Map(){
+		var i = 0;
+		TheWorld[0,5] = 1;
+		TheWorld[5,0] = 3;
+		var n = 0;
+		while(n < 3){//Houses
+			
+			var RandomX = Math.floor((Math.random()*6));
+			
+			var RandomY = Math.floor((Math.random()*6));
+			
+			
+			
+			if(TheWorld[RandomX, RandomY] == null){
+				TheWorld[RandomX, RandomY] = 4;
+				alert("x: " + RandomX);
+				alert("y: " +RandomY);
+				n++;
+			}
+			else {
+				continue;
+			}
+			
+		}
+		/*while(i < 5){//Enemies
+			var RandomX = Math.floor((Math.random()*5));
+			var RandomY = Math.floor((Math.random()*5));
+				
+			if(TheWorld[RandomX,RandomY] == null){
+				TheWorld[RandomX, RandomY] = 5;
+				i++;
+			}
+			else{
+				continue;
+			}
+		}*/
+		var j = 0;
+		while(j < 1){//Boss
+			var RandomX = Math.floor((Math.random()*5));
+			var RandomY = Math.floor((Math.random()*5));
+			
+			if(TheWorld[RandomX, RandomY] == null){
+				TheWorld[RandomX,RandomY] = 6;
+				j++;
+			}
+			else{
+				continue
+			}
+		}
+	}
+	
+	
+	var canvas = document.getElementById("workspace");
+	var drawingSurface = canvas.getContext("2d");
+	var background = new Image();
+	background.onload = function()
+{
+	drawingSurface.drawImage(background, 0, 0);
+}
+background.src = "bg.png";
+
+var house = {
+	IMAGE: "sprites/house.png",
+	Width: 122,
+	Height: 122,
+	//The numbers of the animation frames and the starting frame
+	numberOfFrames: 6,
+	currentFrame: 0,
+	//Properties of the animation cell's X and Y positions on the tile sheet. //They're 0 when this object first loads
+	sourceX: 0,
+	sourceY: 0,
+};
+
+
+var frodoIdle = {
+	IMAGE: "sprites/frodo.png",
+	Width: 122,
+	Height: 122,
+	//The numbers of the animation frames and the starting frame
+	numberOfFrames: 6,
+	currentFrame: 0,
+	//Properties of the animation cell's X and Y positions on the tile sheet. //They're 0 when this object first loads
+	sourceX: 0,
+	sourceY: 0,
+	//UpdateAnimation 	method
+	updateAnimation: function()
+	{
+		this.sourceX = this.currentFrame * this.Width;
+		this.sourceY = 0;         
+	}
+};
+var imageFrodoIdle = new Image();
+imageFrodoIdle.src = frodoIdle.IMAGE;
+
+var imageHouse = new Image();
+imageHouse.src = house.IMAGE;
+
+function renderHouse()
+{
+	drawingSurface.drawImage(imageHouse,house.sourceX, house.sourceY, house.Width, house.Height,houseX, houseY, house.Width, house.Height);	
+}
+
+function renderFrodoIdle()
+{		
+	drawingSurface.drawImage(imageFrodoIdle,frodoIdle.sourceX, frodoIdle.sourceY, frodoIdle.Width, frodoIdle.Height,x, y, frodoIdle.Width, frodoIdle.Height);	
+	
+}
+function doFrodoIdle()
+	{
+		frodoIdle.updateAnimation();
+		renderFrodoIdle();
+	}
+
+window.addEventListener("keydown", keydownHandler, false);
+function keydownHandler(event)
+			{
+				switch(event.keyCode) 
+				{
+					case 39:
+						x += 122;
+						animationState = 0;
+			
+						//Render();
+						break;                        
+				}
+					
+				switch(event.keyCode) 
+				{
+					case 37:
+						x -= 122;
+						animationState = 0;
+							
+						//Render();
+						break;                        
+				}
+					
+				switch(event.keyCode) 
+				{
+					case 38:
+						y -= 122;
+						animationState = 0;
+							
+						//Render();
+						break;                        
+				}
+					
+				switch(event.keyCode) 
+				{
+					case 40:
+						y += 122;
+						animationState = 0;
+							
+							//Render();
+							break;                        
+				}
+			}
+			setInterval
+		(
+			function Render()
+			{
+				drawingSurface.clearRect(0,0,canvas.width, canvas.height);
+				drawingSurface.drawImage(background, 0, 0);
+				
+				var m,q;
+				m =0;
+				q =0;
+				
+				
+				while(m < 6){
+				//for(var m = 0;m < 6;m++){
+				var RANDOM = Math.floor((Math.random()*6));
+				var RANDOM2 = Math.floor((Math.random()*6));
+					m++;
+					while(q < 6){
+					//for(var q = 0;q < 6; q++){
+						if(TheWorld[RANDOM,RANDOM2] == 4){
+						houseX = RANDOM * 122;
+						houseY = RANDOM2 * 122;
+						//alert(houseY);	
+						renderHouse();
+						q++;
+						}
+						else
+						{
+						q++;
+						}
+					}
+					
+					
+				}
+				switch(animationState)
+				{
+					case 0:
+						doFrodoIdle();
+						break;               
+					             
+				}				
+			},1200 //each frame (frame speed)
+		);
+</script>
+</body>
+
+</html>

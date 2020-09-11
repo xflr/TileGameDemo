@@ -1,0 +1,108 @@
+<!doctype>
+<html>
+<title>LOTR Tile Game</title>
+<canvas id="workspace" width="732" height="732"></canvas>
+<script>
+
+var canvas = document.getElementById("workspace");
+var context = canvas.getContext("2d");
+var background = new Image();
+background.onload = function()
+{
+	context.drawImage(background, 0, 0);
+}
+background.src = "bg.png";
+
+var testImage = new Image();
+testImage.src = "sprites/frodo.png";
+testImage.onload = function()
+{
+	context.drawImage(testImage, 0, 610, 122, 122, 0, 0, 122, 122);
+}
+
+var frodo = {
+	IMAGE: "sprites/frodo.png",
+	IDLE: 0,
+	MOVE1: 1,
+	MOVE2: 2,
+	HURT: 3,
+	DEAD: 4,
+	ATTACK: 5,
+	state: 0,
+	sourceX: 0,
+	sourceY: 0,
+	SIZE: 122,
+};
+
+var gandalf = {
+	IMAGE: "sprites/gandalf.png",
+	IDLE: 0,
+	MOVE1: 1,
+	MOVE2: 2,
+	HURT: 3,
+	DEAD: 4,
+	ATTACK: 5,
+	state: 0,
+	sourceX: 0,
+	sourceY: 0,
+	SIZE: 122,
+};
+
+var goblin = {
+	IMAGE: "sprites/exterminatorc.png",
+	IDLE: 0,
+	MOVE1: 1,
+	MOVE2: 2,
+	HURT: 3,
+	DEAD: 4,
+	ATTACK: 5,
+	state: 0,
+	sourceX: 0,
+	sourceY: 0,
+	SIZE: 122,
+};
+
+var wraith = {
+	IMAGE: "sprites/wraith.png",
+	sourceX: 0,
+	sourceY: 0,
+	SIZE: 122,
+};
+
+var house = {
+	IMAGE: "sprites/house.png",
+	sourceX: 0,
+	sourceY: 0,
+	SIZE: 122,
+};
+
+
+<!-- var frodoImage = new Image(); -->
+<!-- frodoImage.addEventListener("load", render, false); -->
+<!-- frodoImage.src = frodo.IMAGE; -->
+<!-- var gandalfImage = new Image(); -->
+<!-- gandalfImage.addEventListener("load", render, false); -->
+<!-- gandalfImage.src = gandalf.IMAGE; -->
+<!-- var goblinImage = new Image(); -->
+<!-- goblinImage.addEventListener("load", render, false); -->
+<!-- goblinImage.src = goblin.IMAGE; -->
+<!-- var wraithImage = new Image(); -->
+<!-- wraithImage.addEventListener("load", render, false); -->
+<!-- wraithImage.src = wraith.IMAGE; -->
+<!-- var houseImage = new Image(); -->
+<!-- houseImage.addEventListener("load", render, false); -->
+<!-- houseImage.src = house.IMAGE; -->
+<!-- window.addEventListener("keydown", keyDownHandler, false); -->
+<!-- window.addEventListener("keyup", keyUpHandler, false); -->
+
+function keyDownHandler(event){
+
+}
+
+function keyUpHandler(event){
+
+}
+
+
+</script>
+</html>
